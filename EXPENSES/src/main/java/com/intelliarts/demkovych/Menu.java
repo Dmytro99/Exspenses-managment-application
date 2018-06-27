@@ -54,7 +54,6 @@ public class Menu {
 
             data.add(new Data(date, nameOfProduct, currency, amountOfMoney));
             sortByDate();
-
             data = data.stream().distinct().collect(Collectors.toList());
 
         } while (input != 0);
@@ -80,6 +79,7 @@ public class Menu {
 
     private void showList() {
         Object[] array = data.toArray();
+        data.sort(Comparator.comparing(Data::getDate).reversed());
         for (Object result : data) {
             System.out.print(result + " \n");
         }
@@ -98,7 +98,10 @@ public class Menu {
         System.out.print("Input Currency to what you want to convert: ");
         String currencyInWhichConvert = reader.nextLine();
         CurrencyConversion dollarConversion = MonetaryConversions.getConversion(currencyInWhichConvert);
+        if (currency.equals("UAH")) {
+            currency = "CZK";
 
+        }
         MonetaryAmount from = Money.of(sum, currency);
 
         MonetaryAmount in = from.with(dollarConversion);
@@ -148,7 +151,12 @@ public class Menu {
         methodsMenu.put("4", this::convert);
         methodsMenu.put("5", this::switchLanguageToUkrainian);
         methodsMenu.put("6", this::switchLanguageToEnglish);
+        methodsMenu.put("Q", this::exit);
 
+    }
+
+    public void exit() {
+        System.exit(0);
     }
 
     private void outputMenu() {
@@ -173,7 +181,7 @@ public class Menu {
                 methodsMenu.get(keyMenu).print();
             } catch (Exception e) {
             }
-        } while (!keyMenu.equalsIgnoreCase("Q"));
+        } while (!keyMenu.equals("Q"));
     }
 //    -----------------------------------------------------------------------------------------
 }
