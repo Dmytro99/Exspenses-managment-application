@@ -4,14 +4,14 @@ package com.intelliarts.demkovych;
 public class Data {
     private String date;
     private String product;
-    private String money;
     private String currency;
+    private int money;
 
-    public Data(String date, String product, String money, String currency) {
+    public Data(String date, String product, String currency,int money) {
         this.date = date;
         this.product = product;
-        this.money = money;
         this.currency = currency;
+        this.money = money;
     }
 
     public Data() {
@@ -34,14 +34,6 @@ public class Data {
         this.product = product;
     }
 
-    public String getMoney() {
-        return money;
-    }
-
-    public void setMoney(String money) {
-        this.money = money;
-    }
-
     public String getCurrency() {
         return currency;
     }
@@ -50,12 +42,21 @@ public class Data {
         this.currency = currency;
     }
 
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+
     @Override
     public String toString() {
         return
                 "\n\n date= " + date + "\n" +
                         " product= " + product + "\n"  +
-                        " money= " + money + "\n" +
-                        " currency= " + currency;
+                        " currency= " + currency + "\n" +
+                        " money= " + money;
     }
 }

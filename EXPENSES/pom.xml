@@ -19,6 +19,12 @@
             </plugin>
         </plugins>
     </build>
-
+<dependencies>
+    <dependency>
+        <groupId>org.javamoney</groupId>
+        <artifactId>moneta</artifactId>
+        <version>0.9</version>
+    </dependency>
+</dependencies>
 
 </project>

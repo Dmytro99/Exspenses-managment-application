@@ -1,14 +1,20 @@
 package com.intelliarts.demkovych;
 
+import org.javamoney.moneta.Money;
+
+import javax.money.MonetaryAmount;
+import javax.money.convert.CurrencyConversion;
+import javax.money.convert.MonetaryConversions;
 import java.util.*;
+import java.util.logging.LogManager;
 import java.util.stream.Collectors;
 
 public class Menu {
     String date;
     String nameOfProduct;
-    String amountOfMoney;
+    int amountOfMoney;
     String currency;
-    String input;
+    int input;
     String clear;
 
 
@@ -25,35 +31,33 @@ public class Menu {
 
     //---------------------------------Action for programme----------------------------------------
     private void addData() {
-        while (true) {
+        do {
 
             System.out.print("\nInput date : ");
             date = reader.nextLine();
             if (!date.matches("([0-9]{2})-([0-9]{2})-([0-9]{4})")) {
-                System.out.println( "Date format is dd-mm-yyyy(day-month-year)!\nPlease try again... ");
+                System.out.println("Date format is dd-mm-yyyy(day-month-year)!\nPlease try again... ");
                 break;
             }
 
             System.out.print("Input your product : ");
             nameOfProduct = reader.nextLine();
 
-            System.out.print("Input amount of money, which you spent for this product : ");
-            amountOfMoney = reader.nextLine();
-
             System.out.print("Input currency : ");
-            currency = reader.nextLine() + ",\n";
+            currency = reader.nextLine();
 
-            System.out.println("Input 0 to finish... \n     OR     \nInput any key (except 0) to continue...");
-            input = reader.nextLine();
+            System.out.print("Input amount of money, which you spent for this product : ");
+            amountOfMoney = reader.nextInt();
 
-            data.add(new Data(date, nameOfProduct, amountOfMoney, currency));
+            System.out.println("\nInput 0 to finish adding... \n");
+            input = reader.nextInt();
+
+            data.add(new Data(date, nameOfProduct, currency, amountOfMoney));
             sortByDate();
 
             data = data.stream().distinct().collect(Collectors.toList());
-            if (input.equals("0")) {
-                break;
-            }
-        }
+
+        } while (input != 0);
 
     }
 
@@ -61,8 +65,8 @@ public class Menu {
         System.out.println("Input the date which you want to delete : ");
         clear = reader.nextLine();
         if (!clear.matches("([0-9]{2})-([0-9]{2})-([0-9]{4})")) {
-            System.out.println( "Date format is dd-mm-yyyy(day-month-year)!\nPlease try again... ");
-        }else {
+            System.out.println("Date format is dd-mm-yyyy(day-month-year)!\nPlease try again... ");
+        } else {
             System.out.println("The information was successfully delete.");
         }
 
@@ -81,6 +85,27 @@ public class Menu {
         }
     }
 
+    public void convert() {
+        int sum = 0;
+        for (int i = 0; i < data.size(); i++) {
+            Data dataObject = data.get(i);
+            sum += dataObject.getMoney();
+
+        }
+
+        LogManager.getLogManager().reset();
+
+        System.out.print("Input Currency to what you want to convert: ");
+        String currencyInWhichConvert = reader.nextLine();
+        CurrencyConversion dollarConversion = MonetaryConversions.getConversion(currencyInWhichConvert);
+
+        MonetaryAmount from = Money.of(sum, currency);
+
+        MonetaryAmount in = from.with(dollarConversion);
+        System.out.println(in);
+
+    }
+
     private void switchLanguageToUkrainian() {
         locale = new Locale("uk");
         bundle = ResourceBundle.getBundle("MyMenu", locale);
@@ -94,6 +119,7 @@ public class Menu {
         setMenu();
         show();
     }
+
     //-----------------------------------------------------------------------------------------
 
 
@@ -106,6 +132,7 @@ public class Menu {
         menu.put("3", bundle.getString("3"));
         menu.put("4", bundle.getString("4"));
         menu.put("5", bundle.getString("5"));
+        menu.put("6", bundle.getString("6"));
         menu.put("Q", bundle.getString("Q"));
     }
 
@@ -118,21 +145,22 @@ public class Menu {
         methodsMenu.put("1", this::addData);
         methodsMenu.put("2", this::clear);
         methodsMenu.put("3", this::showList);
-        methodsMenu.put("4", this::switchLanguageToUkrainian);
-        methodsMenu.put("5", this::switchLanguageToEnglish);
+        methodsMenu.put("4", this::convert);
+        methodsMenu.put("5", this::switchLanguageToUkrainian);
+        methodsMenu.put("6", this::switchLanguageToEnglish);
 
     }
 
     private void outputMenu() {
-        System.out.print("\n\n*******************************************");
-        System.out.println("\n*                 MENU                    *");
-        System.out.println("===========================================");
+        System.out.print("\n\n***********************************************");
+        System.out.println("\n*                    MENU                     *");
+        System.out.println("===============================================");
         for (String key : menu.keySet()) {
             if (key.length() == 1) {
                 System.out.println(menu.get(key));
             }
         }
-        System.out.println("===========================================");
+        System.out.println("===============================================");
     }
 
     public void show() {
